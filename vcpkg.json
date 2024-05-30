@@ -1,0 +1,6 @@
+{
+  "dependencies" : [ {
+    "name" : "directxtk",
+    "version>=" : "2024-02-21"
+  } ]
+}
