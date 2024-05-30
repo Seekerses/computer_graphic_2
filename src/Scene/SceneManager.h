@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <d3d11.h>
-#include "../Object/Components/Scene/SceneComponent.h"
+#include "SceneComponent.h"
 
-class RenderComponent;
+class Renderer;
 class SceneComponent;
 
 class SceneManager
@@ -15,5 +15,5 @@ class SceneManager
 	SceneManager();
 	void AddObject(SceneComponent* obj);
 	void RemoveObject(SceneComponent* obj);
-	void DrawScene(ID3D11DeviceContext* context);
+	void DrawScene(Renderer* renderer);
 };

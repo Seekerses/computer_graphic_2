@@ -1,12 +1,13 @@
 #pragma once
 
 #include <unordered_set>
-#include "Keys.h"
-#include "../Utils/Delegates.h"
 #include <SimpleMath.h>
 #include <iostream>
-#include "../Game/Game.h"
-#include <SimpleMath.h>
+#include "Delegates.h"
+#include "Game.h"
+#include "Keys.h"
+
+class Game;
 
 class InputDevice
 {

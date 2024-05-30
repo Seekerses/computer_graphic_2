@@ -1,12 +1,14 @@
 #pragma once
 
 #include <string>
+
 class Object
 {
  private:
-	std::wstring* name;
+	const std::wstring* name;
  public:
-	explicit Object(std::wstring* name);
+	explicit Object(const std::wstring* name);
 	~Object();
-	std::wstring* GetName() { return this->name; };
+	[[nodiscard]] const std::wstring* GetName() const { return this->name; };
+	virtual void Destroy();
 };

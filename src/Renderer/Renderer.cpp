@@ -8,7 +8,6 @@
 
 Renderer::Renderer(Window* window)
 {
-
 	D3D_FEATURE_LEVEL featureLevel[] = { D3D_FEATURE_LEVEL_11_1 };
 	HWND hWnd = window->getHWnd();
 
@@ -100,7 +99,7 @@ void Renderer::Draw(SceneManager* scene)
 	context->OMSetRenderTargets(1, &rtv, nullptr);
 	context->ClearRenderTargetView(rtv, cleanColor);
 
-	scene->DrawScene(context);
+	scene->DrawScene(this);
 
 	context->OMSetRenderTargets(0, nullptr, nullptr);
 	swapChain->Present(1, /*DXGI_PRESENT_DO_NOT_WAIT*/ 0);

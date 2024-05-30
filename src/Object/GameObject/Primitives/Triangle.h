@@ -1,10 +1,11 @@
 #pragma once
 
-#include "../Components/Scene/Render/RenderComponent.h"
-#include "../Components/Scene/Render/ShaderComponent.h"
-#include "DirectXMath.h"
-#include "../Components/Scene/SceneComponent.h"
+#include "RenderComponent.h"
+#include "ShaderComponent.h"
+#include "SceneComponent.h"
 
+class SceneComponent;
+class RenderComponent;
 class SceneComponent;
 
 class Triangle : public SceneComponent

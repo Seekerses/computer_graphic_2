@@ -3,10 +3,9 @@
 #include <string>
 #include "d3d11.h"
 #include "d3dcompiler.h"
-#include "../../../../Renderer/Renderer.h"
+#include "Renderer.h"
 
 class Renderer;
-class MeshComponent;
 
 class ShaderComponent
 {

@@ -1,7 +1,3 @@
-//
-// Created by seekerses on 30.05.2024.
-//
-
 #pragma once
 
 #include "SimpleMath.h"

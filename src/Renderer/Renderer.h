@@ -3,13 +3,12 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <wrl.h>
-#include "../Window/Window.h"
+#include "Window.h"
 #include "SceneManager.h"
-#include <d3d11.h>
-#include "../Utils/SMath.h"
+#include "SMath.h"
 
 class Window;
-class ShaderComponent;
+class SceneManager;
 
 class Renderer
 {
@@ -27,10 +26,6 @@ class Renderer
 	~Renderer();
 	ID3D11Device* GetDevice() { return device; };
 	ID3D11DeviceContext* GetContext() { return context; };
-	IDXGISwapChain* GetSwapChain() { return swapChain; };
 	Window* GetWindow() { return window; };
-	ID3D11VertexShader* CreateVertexShader(const ShaderComponent& shader);
-	ID3D11PixelShader* CreatePixelShader(const ShaderComponent& shader);
-
 	void Draw(SceneManager* scene);
 };

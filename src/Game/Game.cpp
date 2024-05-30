@@ -1,10 +1,11 @@
 #include "Game.h"
-#include "../Utils/Colors.h"
-#include "../Renderer/Vertex.h"
-#include "../Object/Primitives/Triangle.h"
-#include "../Object/Primitives/Rectangle.h"
+#include "Colors.h"
+#include "Vertex.h"
+#include "Triangle.h"
+#include "Rectangle.h"
 
 Game* game = nullptr;
+
 
 Game* GetGame() {
 	return game;
@@ -145,8 +146,6 @@ void Game::Load()
 	firstRectangle->AddChild(firstTriangle);
 	firstRectangle->AddChild(secRectangle);
 	secRectangle->AddChild(thirdRectangle);
-	firstRectangle->RemoveChild(firstRectangle);
 
-	firstRectangle->PrintHierarchy(0);
 	scene->AddObject(firstRectangle);
 }

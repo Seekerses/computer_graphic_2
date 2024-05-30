@@ -3,17 +3,17 @@
 #include <windows.h>
 #include <string>
 #include "winuser.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/SceneManager.h"
-#include "../Object/Components/Scene/Render/ShaderComponent.h"
-#include <chrono>
-#include <wrl.h>
+#include "Renderer.h"
+#include "SceneManager.h"
+#include "ShaderComponent.h"
+#include "InputDevice.h"
 #include <chrono>
 
 class InputDevice;
 class SceneManager;
 class Renderer;
 class Triangle;
+class Rectangle;
 class MeshComponent;
 
 class Game

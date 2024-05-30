@@ -1,0 +1,3 @@
+add_subdirectory(GameObject)
+
+target_include_directories(computer_graphic PRIVATE GameObject)

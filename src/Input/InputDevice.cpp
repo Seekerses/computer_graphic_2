@@ -66,8 +66,8 @@ void InputDevice::OnMouseMove(RawMouseEventArgs args)
 	GetCursorPos(&p);
 	ScreenToClient(game->GetRenderer()->GetWindow()->getHWnd(), &p);
 	
-	MousePosition	= Vector2(p.x, p.y);
-	MouseOffset		= Vector2(args.X, args.Y);
+	MousePosition	= Vector2(static_cast<float>(p.x), static_cast<float>(p.y));
+	MouseOffset		= Vector2(static_cast<float>(args.X), static_cast<float>(args.Y));
 	MouseWheelDelta = args.WheelDelta;
 
 	const MouseMoveEventArgs moveArgs = {MousePosition, MouseOffset, MouseWheelDelta};

@@ -15,9 +15,9 @@ void SceneManager::AddObject(SceneComponent* obj)
 	this->scene.emplace_back(obj);
 }
 
-void SceneManager::DrawScene(ID3D11DeviceContext* context)
+void SceneManager::DrawScene(Renderer* renderer)
 {
 	for (auto obj: scene) {
-		obj->Draw();
+		obj->Draw(renderer);
 	}
 }

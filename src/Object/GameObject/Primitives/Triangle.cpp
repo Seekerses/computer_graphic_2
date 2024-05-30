@@ -11,5 +11,5 @@ Triangle::Triangle(std::wstring* name, Renderer* renderer, Vertex vertices[3], S
 		vertices, 3,
 		indices, 3,
 		strides, offsets);
-	SetRenderComponent(new RenderComponent(renderer, mesh, shaderComponent));
+	SetRenderComponent(new RenderComponent(mesh, shaderComponent));
 }

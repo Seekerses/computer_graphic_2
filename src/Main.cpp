@@ -2,6 +2,6 @@
 
 int main()
 {
-	Game game = Game("Lab_1", 800, 600);
-	game.Start();
+	Game newGame = Game("Lab_1", 800, 600);
+	newGame.Start();
 }

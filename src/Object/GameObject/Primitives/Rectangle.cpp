@@ -11,5 +11,5 @@ Rectangle::Rectangle(std::wstring* name, Renderer* renderer, Vertex* vertices, S
 		vertices, 4,
 		indices, 6,
 		strides, offsets);
-	SceneComponent::SetRenderComponent(new RenderComponent(renderer, mesh, shaderComponent));
+	SceneComponent::SetRenderComponent(new RenderComponent(mesh, shaderComponent));
 }

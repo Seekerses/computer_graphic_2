@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../../../../Renderer/Renderer.h"
-#include "../../../../Renderer/Vertex.h"
+#include "Renderer.h"
+#include "Vertex.h"
 
-class ShaderComponent;
 class Renderer;
 
 class MeshComponent

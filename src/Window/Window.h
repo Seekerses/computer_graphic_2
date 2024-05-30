@@ -1,6 +1,9 @@
 #pragma once
+
 #include <windows.h>
-#include "../Input/InputDevice.h"
+#include "InputDevice.h"
+
+class InputDevice;
 
 class Window
 {
