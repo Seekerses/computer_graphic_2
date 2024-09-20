@@ -2,12 +2,10 @@
 
 #include <vector>
 #include <d3d11.h>
+#include "Renderable.h"
 #include "SceneComponent.h"
 
-class Renderer;
-class SceneComponent;
-
-class SceneManager
+class SceneManager : public Renderable
 {
  private:
 	std::vector<SceneComponent*> scene;
@@ -15,5 +13,5 @@ class SceneManager
 	SceneManager();
 	void AddObject(SceneComponent* obj);
 	void RemoveObject(SceneComponent* obj);
-	void DrawScene(Renderer* renderer);
+	void Draw() override;
 };

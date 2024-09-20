@@ -1,7 +1,9 @@
-#include "Game/Game.h"
+#include "Engine.h"
 
 int main()
 {
-	Game newGame = Game("Lab_1", 800, 600);
-	newGame.Start();
+	Engine engine;
+	engine.InitSubsystems();
+
+
 }

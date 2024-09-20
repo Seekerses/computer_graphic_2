@@ -5,5 +5,5 @@
 class Component : public Object
 {
  public:
-	explicit Component(const std::wstring* name);
+	explicit Component(Id name);
 };

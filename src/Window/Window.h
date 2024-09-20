@@ -3,19 +3,18 @@
 #include <windows.h>
 #include "InputDevice.h"
 
-class InputDevice;
-
 class Window
 {
  private:
-	HINSTANCE hInstance;
-	HWND hWnd;
-	LONG height;
-	LONG width;
+	HINSTANCE _hInstance;
+	HWND _hWnd;
+	LONG _height;
+	LONG _width;
 
  public:
 	Window(LPCSTR name, LONG width, LONG height);
-	[[nodiscard]] LONG getWidth() const;
-	[[nodiscard]] LONG getHeight() const;
-	HWND getHWnd();
+	[[nodiscard]] LONG getWidth() const { return _width; };
+	[[nodiscard]] LONG getHeight() const { return _height; };
+	[[nodiscard]] HWND getHWnd() const { return _hWnd; };
+	[[nodiscard]] float GetRatio() const { return static_cast<float>(_width) / static_cast<float>(_height); }
 };

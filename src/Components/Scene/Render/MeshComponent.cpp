@@ -1,59 +1,71 @@
 #include "MeshComponent.h"
+#include "RenderManager.h"
 
-MeshComponent::MeshComponent(Renderer* renderer,
-	D3D_PRIMITIVE_TOPOLOGY topology,
-	Vertex* vertices,
-	UINT verticesNum,
-	const UINT* indices,
-	UINT indicesNum,
-	const UINT* strides,
-	const UINT* offsets)
-	:
-	primitiveTopology(topology),
-	indicesNumber(indicesNum),
-	strides(strides),
-	offsets(offsets)
+MeshComponent::MeshComponent(MeshAsset* meshAsset) : _meshAsset(meshAsset)
 {
-	D3D11_BUFFER_DESC vertexBufDesc = {};
-	vertexBufDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufDesc.CPUAccessFlags = 0;
-	vertexBufDesc.MiscFlags = 0;
-	vertexBufDesc.StructureByteStride = 0;
-	vertexBufDesc.ByteWidth = sizeof(Vertex) * verticesNum;
+	D3D11_BUFFER_DESC vertexConstBufDesc = {};
+	vertexConstBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexConstBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	vertexConstBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexConstBufDesc.MiscFlags = 0;
+	vertexConstBufDesc.StructureByteStride = 0;
+	vertexConstBufDesc.ByteWidth = sizeof(Transform);
 
-	D3D11_SUBRESOURCE_DATA vertexData = {};
-	vertexData.pSysMem = vertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
+	RenderManager::Get()->GetDevice()->CreateBuffer(&vertexConstBufDesc, nullptr, &_vertexConstantBuffer);
 
-	renderer->GetDevice()->CreateBuffer(&vertexBufDesc, &vertexData, &verticesBuffer);
+	D3D11_BUFFER_DESC pixelConstBufDesc = {};
+	pixelConstBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+	pixelConstBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	pixelConstBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	pixelConstBufDesc.MiscFlags = 0;
+	pixelConstBufDesc.StructureByteStride = 0;
+	pixelConstBufDesc.ByteWidth = sizeof(Color);
 
-	D3D11_BUFFER_DESC indexBufDesc = {};
-	indexBufDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufDesc.CPUAccessFlags = 0;
-	indexBufDesc.MiscFlags = 0;
-	indexBufDesc.StructureByteStride = 0;
-	indexBufDesc.ByteWidth = sizeof(UINT) * indicesNum;
-
-	D3D11_SUBRESOURCE_DATA indexData = {};
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	renderer->GetDevice()->CreateBuffer(&indexBufDesc, &indexData, &indicesBuffer);
+	RenderManager::Get()->GetDevice()->CreateBuffer(&pixelConstBufDesc, nullptr, &_pixelConstantBuffer);
 }
 
-MeshComponent::~MeshComponent() {
-	delete strides;
-	delete offsets;
+MeshComponent::~MeshComponent()
+{
+	_vertexConstantBuffer->Release();
+	_pixelConstantBuffer->Release();
 }
 
-void MeshComponent::SwapContext(Renderer* renderer)
+void MeshComponent::SwapContext(Transform transform, Color color)
 {
+	RenderManager* renderer = RenderManager::Get();
 	ID3D11DeviceContext* context = renderer->GetContext();
-	context->IASetPrimitiveTopology(primitiveTopology);
-	context->IASetIndexBuffer(indicesBuffer, DXGI_FORMAT_R32_UINT, 0);
-	context->IASetVertexBuffers(0, 1, &verticesBuffer, strides, offsets);
+	updateVertexConstantBuffer(transform);
+	updatePixelConstantBuffer(color);
+	context->IASetPrimitiveTopology(_meshAsset->GetPrimitiveTopology());
+	ID3D11Buffer* verticesBuffer = _meshAsset->GetVerticesBuffer();
+	context->IASetVertexBuffers(0, 1,
+		&verticesBuffer,_meshAsset->GetStrides(),_meshAsset->GetOffsets());
+	context->IASetIndexBuffer(_meshAsset->GetIndicesBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->VSSetConstantBuffers(0, 1, &_vertexConstantBuffer);
+	context->PSSetConstantBuffers(1, 1, &_pixelConstantBuffer);
+}
+
+void MeshComponent::updateVertexConstantBuffer(Transform transform)
+{
+	RenderManager* renderer = RenderManager::Get();
+	transform.scale.x /= renderer->GetWindow()->GetRatio();
+	D3D11_MAPPED_SUBRESOURCE data;
+	renderer->GetContext()->Map(
+		_vertexConstantBuffer, 0,
+		D3D11_MAP_WRITE_DISCARD, 0,
+		&data);
+	memcpy(data.pData, &transform, sizeof(Transform));
+	renderer->GetContext()->Unmap(_vertexConstantBuffer, 0);
+}
+
+void MeshComponent::updatePixelConstantBuffer(Color color)
+{
+	RenderManager* renderer = RenderManager::Get();
+	D3D11_MAPPED_SUBRESOURCE data;
+	renderer->GetContext()->Map(
+		_pixelConstantBuffer, 0,
+		D3D11_MAP_WRITE_DISCARD, 0,
+		&data);
+	memcpy(data.pData, &color, sizeof(Color));
+	renderer->GetContext()->Unmap(_pixelConstantBuffer, 0);
 }

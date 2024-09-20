@@ -1,6 +1,12 @@
 {
-  "dependencies" : [ {
+  "dependencies" : [
+    {
     "name" : "directxtk",
     "version>=" : "2024-02-21"
-  } ]
+    },
+    {
+      "name" : "assimp",
+      "version>=" : "5.4.2"
+    }
+  ]
 }

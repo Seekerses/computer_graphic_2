@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
+#include "Types.h"
 
 class Object
 {
  private:
-	const std::wstring* name;
+	Id name;
  public:
-	explicit Object(const std::wstring* name);
+	explicit Object(Id name);
 	~Object();
-	[[nodiscard]] const std::wstring* GetName() const { return this->name; };
+	[[nodiscard]] Id GetName() const { return this->name; };
 	virtual void Destroy();
 };

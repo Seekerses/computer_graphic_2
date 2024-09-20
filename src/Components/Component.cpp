@@ -1,6 +1,6 @@
 #include "Component.h"
 
-Component::Component(const std::wstring* name)
+Component::Component(Id name)
 	: Object(name)
 {
 

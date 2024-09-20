@@ -2,45 +2,33 @@
 
 #include <windows.h>
 #include <string>
-#include "winuser.h"
-#include "Renderer.h"
-#include "SceneManager.h"
-#include "ShaderComponent.h"
-#include "InputDevice.h"
+#include <winuser.h>
 #include <chrono>
-
-class InputDevice;
-class SceneManager;
-class Renderer;
-class Triangle;
-class Rectangle;
-class MeshComponent;
+#include "GameObject.h"
+#include "InputDevice.h"
+#include "SceneManager.h"
 
 class Game
 {
  private:
-	Renderer* renderer = nullptr;
 	SceneManager* scene = nullptr;
-	InputDevice* inputDevice = nullptr;
+	std::vector<GameObject*> objects;
 	bool running;
-	std::chrono::time_point<std::chrono::steady_clock> lastMs;
-	UINT frameCount;
-	float totalTime;
-	float deltaTime;
+	std::chrono::time_point<std::chrono::steady_clock> lastFrameMs;
+	UINT score[2] = {0, 0};
 
 	void Load();
 	void HandleInput();
 	void RunLoop();
 	void CleanUp();
+	void UpdateUI();
+	void CalculateCollisions();
  public:
-	Game(const std::string& window_name, uint16_t width, uint16_t height);
+	Game();
 	~Game();
 	void Start();
 
-	Renderer* GetRenderer() { return renderer; }
 	SceneManager* GetSceneManager() { return scene; }
-	InputDevice* GetInputDevice() { return inputDevice; }
+	void AddGameObject(GameObject* gameObject);
+	void AddScore(UINT player) { this->score[player]++; };
 };
-
-extern Game* game;
-extern Game* GetGame();

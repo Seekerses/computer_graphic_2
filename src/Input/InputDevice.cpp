@@ -1,9 +1,9 @@
 #include "InputDevice.h"
-
+#include "RenderManager.h"
 
 using namespace DirectX::SimpleMath;
 
-InputDevice::InputDevice(Game* inGame) : game(inGame)
+InputDevice::InputDevice()
 {
 	keys = new std::unordered_set<Keys>();
 	
@@ -12,12 +12,12 @@ InputDevice::InputDevice(Game* inGame) : game(inGame)
 	Rid[0].usUsagePage = 0x01;
 	Rid[0].usUsage = 0x02;
 	Rid[0].dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
-	Rid[0].hwndTarget = game->GetRenderer()->GetWindow()->getHWnd();
+	Rid[0].hwndTarget = RenderManager::Get()->GetWindow()->getHWnd();
 
 	Rid[1].usUsagePage = 0x01;
 	Rid[1].usUsage = 0x06;
 	Rid[1].dwFlags = 0;   // adds HID keyboard and also ignores legacy keyboard messages
-	Rid[1].hwndTarget = game->GetRenderer()->GetWindow()->getHWnd();
+	Rid[1].hwndTarget = RenderManager::Get()->GetWindow()->getHWnd();
 
 	if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE)
 	{
@@ -64,7 +64,7 @@ void InputDevice::OnMouseMove(RawMouseEventArgs args)
 
 	POINT p;
 	GetCursorPos(&p);
-	ScreenToClient(game->GetRenderer()->GetWindow()->getHWnd(), &p);
+	ScreenToClient(RenderManager::Get()->GetWindow()->getHWnd(), &p);
 	
 	MousePosition	= Vector2(static_cast<float>(p.x), static_cast<float>(p.y));
 	MouseOffset		= Vector2(static_cast<float>(args.X), static_cast<float>(args.Y));

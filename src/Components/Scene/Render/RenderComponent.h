@@ -1,12 +1,9 @@
 #pragma once
 
+#include "Types.h"
+#include "Transform.h"
 #include "MeshComponent.h"
 #include "ShaderComponent.h"
-#include "Transform.h"
-
-class ShaderComponent;
-class MeshComponent;
-class Transform;
 
 class RenderComponent
 {
@@ -14,11 +11,11 @@ class RenderComponent
 	MeshComponent* mesh;
 	ShaderComponent* shader;
 
-	void swapContext(Renderer* renderer);
+	void swapContext(Transform transform, Color color);
 
  public:
 	explicit RenderComponent(
 		MeshComponent* _mesh,
 		ShaderComponent* _shader);
-	void Draw(Renderer* renderer, Transform* transform);
+	void Draw(Transform transform, Color color);
 };

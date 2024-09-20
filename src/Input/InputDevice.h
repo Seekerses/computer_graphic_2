@@ -4,17 +4,10 @@
 #include <SimpleMath.h>
 #include <iostream>
 #include "Delegates.h"
-#include "Game.h"
 #include "Keys.h"
-
-class Game;
 
 class InputDevice
 {
-	friend class Game;
-	
-	Game* game;
-
 	std::unordered_set<Keys>* keys;
 
 public:
@@ -28,13 +21,13 @@ public:
 
 	DirectX::SimpleMath::Vector2 MousePosition;
 	DirectX::SimpleMath::Vector2 MouseOffset;
-	int MouseWheelDelta;
+	int MouseWheelDelta{};
 
 	MulticastDelegate<const MouseMoveEventArgs&> MouseMove;
 	
 public:
 	
-	explicit InputDevice(Game* inGame);
+	explicit InputDevice();
 	~InputDevice();
 
 

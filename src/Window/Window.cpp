@@ -1,8 +1,5 @@
 #include "Window.h"
-
-#ifdef _DEBUG
-#include <iostream>
-#endif
+#include "Engine.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
@@ -21,15 +18,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		if (raw->header.dwType == RIM_TYPEKEYBOARD)
 		{
-//			printf(" Kbd: make=%04i Flags:%04i Reserved:%04i ExtraInformation:%08i, msg=%04i VK=%i \n",
-//				raw->data.keyboard.MakeCode,
-//				raw->data.keyboard.Flags,
-//				raw->data.keyboard.Reserved,
-//				raw->data.keyboard.ExtraInformation,
-//				raw->data.keyboard.Message,
-//				raw->data.keyboard.VKey);
-
-			GetGame()->GetInputDevice()->OnKeyDown({
+			Engine::GetInputDevice()->OnKeyDown({
 				raw->data.keyboard.MakeCode,
 				raw->data.keyboard.Flags,
 				raw->data.keyboard.VKey,
@@ -38,8 +27,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		}
 		else if (raw->header.dwType == RIM_TYPEMOUSE)
 		{
-//			printf(" Mouse: X=%04d Y:%04d \n", raw->data.mouse.lLastX, raw->data.mouse.lLastY);
-			GetGame()->GetInputDevice()->OnMouseMove({
+			Engine::GetInputDevice()->OnMouseMove({
 				raw->data.mouse.usFlags,
 				raw->data.mouse.usButtonFlags,
 				static_cast<int>(raw->data.mouse.ulExtraInformation),
@@ -53,7 +41,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		delete[] lpb;
 	}
 	case WM_KEYDOWN: {
-//		std::cout << "Key: " << static_cast<unsigned int>(wparam) << std::endl;
 		if (static_cast<unsigned int>(wparam) == static_cast<int>(Keys::Escape)) PostQuitMessage(0);
 		return 0;
 	}
@@ -67,9 +54,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hwnd, umessage, wparam, lparam);
 }
 
-Window::Window(LPCSTR name, LONG width, LONG height) : height(height), width(width)
+Window::Window(LPCSTR name, LONG width, LONG height) : _height(height), _width(width)
 {
-	this->hInstance = GetModuleHandle(nullptr);
+	_hInstance = GetModuleHandle(nullptr);
 
 	WNDCLASSEX wc;
 
@@ -77,7 +64,7 @@ Window::Window(LPCSTR name, LONG width, LONG height) : height(height), width(wid
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
+	wc.hInstance = _hInstance;
 	wc.hIcon = LoadIcon(nullptr, IDI_WINLOGO);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -96,30 +83,15 @@ Window::Window(LPCSTR name, LONG width, LONG height) : height(height), width(wid
 	auto posX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
 	auto posY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
 
-	this->hWnd = CreateWindowEx(WS_EX_APPWINDOW, name, name,
+	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, name, name,
 		dwStyle,
 		posX, posY,
 		windowRect.right - windowRect.left,
 		windowRect.bottom - windowRect.top,
-		nullptr, nullptr, hInstance, nullptr);
+		nullptr, nullptr, _hInstance, nullptr);
 
-	ShowWindow(hWnd, SW_SHOW);
-	SetForegroundWindow(hWnd);
-	SetFocus(hWnd);
+	ShowWindow(_hWnd, SW_SHOW);
+	SetForegroundWindow(_hWnd);
+	SetFocus(_hWnd);
 	ShowCursor(true);
-}
-
-LONG Window::getHeight() const
-{
-	return height;
-}
-
-LONG Window::getWidth() const
-{
-	return width;
-}
-
-HWND Window::getHWnd()
-{
-	return hWnd;
 }

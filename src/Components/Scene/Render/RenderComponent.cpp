@@ -1,4 +1,5 @@
 #include "RenderComponent.h"
+#include "RenderManager.h"
 
 RenderComponent::RenderComponent(
 	MeshComponent* _mesh,
@@ -7,16 +8,16 @@ RenderComponent::RenderComponent(
 
 }
 
-void RenderComponent::Draw(Renderer* renderer, Transform* transform)
+void RenderComponent::Draw(Transform transform, Color color)
 {
-	swapContext(renderer);
-	renderer->GetContext()->DrawIndexed(
+	swapContext(transform, color);
+	RenderManager::Get()->GetContext()->DrawIndexed(
 		mesh->GetIndexesNumber(),0,0
 		);
 }
 
-void RenderComponent::swapContext(Renderer* renderer)
+void RenderComponent::swapContext(Transform transform, Color color)
 {
-	shader->SwapContext(renderer);
-	mesh->SwapContext(renderer);
+	mesh->SwapContext(transform, color);
+	shader->SwapContext();
 }

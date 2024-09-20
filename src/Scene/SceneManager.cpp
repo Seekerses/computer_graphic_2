@@ -15,9 +15,9 @@ void SceneManager::AddObject(SceneComponent* obj)
 	this->scene.emplace_back(obj);
 }
 
-void SceneManager::DrawScene(Renderer* renderer)
+void SceneManager::Draw()
 {
 	for (auto obj: scene) {
-		obj->Draw(renderer);
+		obj->Draw();
 	}
 }

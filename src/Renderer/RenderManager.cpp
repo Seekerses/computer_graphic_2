@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "RenderManager.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -6,7 +6,7 @@
 #pragma comment(lib, "dxguid.lib")
 
 
-Renderer::Renderer(Window* window)
+void RenderManager::Init(Window* window)
 {
 	D3D_FEATURE_LEVEL featureLevel[] = { D3D_FEATURE_LEVEL_11_1 };
 	HWND hWnd = window->getHWnd();
@@ -37,29 +37,29 @@ Renderer::Renderer(Window* window)
 		1,
 		D3D11_SDK_VERSION,
 		&swapDesc,
-		&swapChain,
-		&device,
+		&_swapChain,
+		&_device,
 		nullptr,
-		&context);
+		&_context);
 
 	if(FAILED(res))
 	{
 		MessageBox(hWnd,
 			"Failed to create DirectX Device and Swap Chain",
-			"Renderer fatal error",
+			"RenderManager fatal error",
 			MB_OK);
 	}
 
 	ID3D11Texture2D* backTex;
 
-	res = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backTex);
-	res |= device->CreateRenderTargetView(backTex, nullptr, &rtv);
+	res = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backTex);
+	res |= _device->CreateRenderTargetView(backTex, nullptr, &_rtv);
 	backTex->Release();
 	if(FAILED(res))
 	{
 		MessageBox(hWnd,
 			"Failed to obtain Swap Chain back buffer",
-			"Renderer fatal error",
+			"RenderManager fatal error",
 			MB_OK);
 	}
 
@@ -67,44 +67,66 @@ Renderer::Renderer(Window* window)
 	rastDesc.CullMode = D3D11_CULL_NONE;
 	rastDesc.FillMode = D3D11_FILL_SOLID;
 
-	res = device->CreateRasterizerState(&rastDesc, &rasterizerState);
+	res = _device->CreateRasterizerState(&rastDesc, &_rasterizerState);
 	if(FAILED(res))
 	{
 		MessageBox(hWnd,
 			"Failed to crete rasterizer state",
-			"Renderer fatal error",
+			"RenderManager fatal error",
 			MB_OK);
 	}
 
-	context->RSSetState(rasterizerState);
-	this->window = window;
+	_context->RSSetState(_rasterizerState);
+	_window = window;
+	_instance = this;
 }
 
-void Renderer::Draw(SceneManager* scene)
+void RenderManager::Release()
 {
-	context->ClearState();
+	_rasterizerState->Release();
+	_rtv->Release();
+	_swapChain->Release();
+	_context->Release();
+	_device->Release();
+	delete _window;
+}
 
-	context->RSSetState(rasterizerState);
+RenderManager* RenderManager::Get()
+{
+	return _instance;
+}
+
+void RenderManager::Draw(Renderable* scene)
+{
+	_context->ClearState();
+
+	_context->RSSetState(_rasterizerState);
 
 	D3D11_VIEWPORT viewport = {};
-	viewport.Width = static_cast<float>(window->getWidth());
-	viewport.Height = static_cast<float>(window->getHeight());
+	viewport.Width = static_cast<float>(_window->getWidth());
+	viewport.Height = static_cast<float>(_window->getHeight());
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1.0f;
 
-	context->RSSetViewports(1, &viewport);
+	_context->RSSetViewports(1, &viewport);
 
-	context->OMSetRenderTargets(1, &rtv, nullptr);
-	context->ClearRenderTargetView(rtv, cleanColor);
+	_context->OMSetRenderTargets(1, &_rtv, nullptr);
+	_context->ClearRenderTargetView(_rtv, _cleanColor);
 
-	scene->DrawScene(this);
+	scene->Draw();
 
-	context->OMSetRenderTargets(0, nullptr, nullptr);
-	swapChain->Present(1, /*DXGI_PRESENT_DO_NOT_WAIT*/ 0);
+	_context->OMSetRenderTargets(0, nullptr, nullptr);
+	_swapChain->Present(1, /*DXGI_PRESENT_DO_NOT_WAIT*/ 0);
 }
-Renderer::~Renderer()
+
+void RenderManager::SetClearColor(Color color)
 {
-	delete window;
+	_cleanColor[0] = color.x;
+	_cleanColor[1] = color.y;
+	_cleanColor[2] = color.z;
+	_cleanColor[3] = color.w;
 }
+
+RenderManager* RenderManager::_instance;

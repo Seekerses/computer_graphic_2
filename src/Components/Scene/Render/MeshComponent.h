@@ -1,25 +1,21 @@
 #pragma once
 
-#include "Renderer.h"
-#include "Vertex.h"
-
-class Renderer;
+#include "Types.h"
+#include "Transform.h"
+#include "MeshAsset.h"
 
 class MeshComponent
 {
  private:
-	D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
-	ID3D11Buffer* verticesBuffer = nullptr;
-	ID3D11Buffer* indicesBuffer = nullptr;
-	UINT indicesNumber;
-	const UINT* strides;
-	const UINT* offsets;
+	MeshAsset* _meshAsset;
+	ID3D11Buffer* _vertexConstantBuffer = nullptr;
+	ID3D11Buffer* _pixelConstantBuffer = nullptr;
+
+	void updateVertexConstantBuffer(Transform transform);
+	void updatePixelConstantBuffer(Color color);
  public:
-	MeshComponent(Renderer* renderer, D3D_PRIMITIVE_TOPOLOGY topology, Vertex* vertices, UINT vertexNum, const UINT* indices, UINT indicesNum, const UINT* strides, const UINT* offsets);
+	explicit MeshComponent(MeshAsset* meshAsset);
 	~MeshComponent();
-	ID3D11Buffer* GetVertexBuffer() { return verticesBuffer; };
-	ID3D11Buffer* GetIndexBuffer() { return indicesBuffer; };
-	[[nodiscard]] UINT GetIndexesNumber() const { return indicesNumber; };
-	[[nodiscard]] D3D_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const { return primitiveTopology; };
-	void SwapContext(Renderer* renderer);
+	[[nodiscard]] UINT GetIndexesNumber() const { return _meshAsset->GetIndicesNumber(); };
+	void SwapContext(Transform transform, Color color);
 };

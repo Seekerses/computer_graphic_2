@@ -13,4 +13,5 @@ target_include_directories(computer_graphic PRIVATE
         Types
         Utils
         Window
+        Engine
 )

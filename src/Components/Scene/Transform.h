@@ -2,9 +2,9 @@
 
 #include "SimpleMath.h"
 
-class Transform
+struct Transform
 {
- private:
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 rotation;
+	DirectX::XMFLOAT4 position;
+	DirectX::XMFLOAT4 rotation;
+	DirectX::XMFLOAT4 scale;
 };
